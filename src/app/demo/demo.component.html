@@ -1,0 +1,50 @@
+<p>
+  demo works!
+</p>
+
+<form [formGroup]="boundGroup.control">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <input
+          type="text"
+          formControlName="name"
+          class="form-control">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Friends ({{boundGroup.get('friends').length}})</h4>
+      <form [formGroup]="addFriendFg"
+        (ngSubmit)="boundGroup.get('friends').push(addFriendFg.value); addFriendFg.patchValue({name: ''})">
+        <div class="form-group">
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="New Friend Name"
+              aria-label="New Friend Name"
+              formControlName="name"
+              [attr.aria-describedby]="formId + 'add-friend-submit'">
+            <div class="input-group-append">
+              <button
+                class="btn btn-outline-secondary"
+                [attr.id]="formId + 'add-friend-submit'"
+                type="submit"
+                [disabled]="addFriendFg.invalid">
+                <i class="fas fa-plus"></i>
+                <span class="sr-only">Add Friend</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div formArrayName="friends">
+        <div *ngFor="let friendFg of boundGroup.get('friends').control.controls; let i = index">
+          {{i}}
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
