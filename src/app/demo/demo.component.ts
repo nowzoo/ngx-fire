@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { FormBuilder, Validators, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { Reference } from '@firebase/database';
-import { INgxFireGroupOptions, INgxFireGroupBinding } from '../ngx-fire/interfaces';
-import { NgxFireFactory } from '../ngx-fire/ngx-fire.service';
+import { NgxFireFactory } from '../lib/ngx-fire-factory.service';
+import { INgxFireGroupBinding } from '../lib/interfaces';
 
 @Component({
   selector: 'app-demo',
@@ -11,46 +11,49 @@ import { NgxFireFactory } from '../ngx-fire/ngx-fire.service';
 })
 export class DemoComponent implements OnInit {
   @Input() baseRef: Reference;
-
-  boundGroup: INgxFireGroupBinding;
+  formId = 'app-lib-demo-form-';
+  fg: FormGroup;
   addFriendFg: FormGroup;
-  formId = 'app-demo-form-';
 
+  colors = [
+    {label: 'Black', value: 'black'},
+    {label: 'Pink', value: 'pink'},
+    {label: 'None', value: null},
+  ];
+
+  binding: INgxFireGroupBinding;
 
   constructor(
-    private factory: NgxFireFactory,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private factory: NgxFireFactory
   ) { }
 
   ngOnInit() {
     this.addFriendFg = this.fb.group({
       name: ['', Validators.required]
     });
+    this.fg = this.fb.group({
+      name: ['', Validators.required],
+      preferences: this.fb.group({
+        favorite_color: [null]
+      }),
+      friends: this.fb.array([])
+    });
 
-    const groupOptions: INgxFireGroupOptions = {
-      type: 'group',
-      children: {
-        name: {type: 'control', debounce: 500, trim: true, validators: [Validators.required]},
-        friends: {
-          type: 'array',
-          controlOptions: {
-            type: 'group',
-            children: {
-              name: {type: 'control', debounce: 500, trim: true},
-              imaginary: {type: 'control'},
-              favoriteColors: {
-                type: 'array',
-                controlOptions: {type: 'control', debounce: 500, trim: true}
-              }
-            }
-          }
-        }
+    this.binding = this.factory.group(this.fg, this.baseRef, {
+      name: {trim: true, debounce: 500},
+      friends: {
+        createChild: this.getFriendFg.bind(this),
+        childBindingOptions: {name: {trim: true, debounce: 500}}
       }
-    };
+    });
+  }
 
-    this.boundGroup = this.factory.group(this.baseRef, groupOptions);
-    this.boundGroup.start();
-
+  getFriendFg() {
+    return this.fb.group({
+      name: ['', Validators.required],
+      imaginary: [false]
+    });
   }
 
 }

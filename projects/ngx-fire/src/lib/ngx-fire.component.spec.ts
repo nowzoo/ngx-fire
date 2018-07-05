@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DemoFgComponent } from './demo-fg.component';
+import { NgxFireComponent } from './ngx-fire.component';
 
-describe('DemoFgComponent', () => {
-  let component: DemoFgComponent;
-  let fixture: ComponentFixture<DemoFgComponent>;
+describe('NgxFireComponent', () => {
+  let component: NgxFireComponent;
+  let fixture: ComponentFixture<NgxFireComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DemoFgComponent ]
+      declarations: [ NgxFireComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DemoFgComponent);
+    fixture = TestBed.createComponent(NgxFireComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

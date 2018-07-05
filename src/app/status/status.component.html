@@ -1,0 +1,11 @@
+<div class="d-inline-block ml-4">
+  <span *ngIf="'saving' === status" class="badge badge-secondary">
+    <i class="fas fa-spin fa-spinner"></i>
+    Saving...
+  </span>
+
+  <span *ngIf="'saved' === status" class="badge badge-success">
+    <i class="fas fa-check"></i>
+    Saved!
+  </span>
+</div>

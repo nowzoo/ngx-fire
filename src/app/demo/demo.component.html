@@ -1,50 +1,100 @@
-<p>
-  demo works!
-</p>
-
-<form [formGroup]="boundGroup.control">
-  <div class="row">
-    <div class="col-md-6">
-      <div class="form-group">
+<div [formGroup]="fg">
+  <div class="form-group">
+    <label [attr.for]="formId + '-name'">Your Name</label>
+    <app-status [binding]="binding.child('name')"></app-status>
+    <input
+      [attr.id]="formId + '-name'"
+      type="text"
+      class="form-control"
+      placeholder="Your Name"
+      formControlName="name">
+  </div>
+  <h4>Preferences</h4>
+  <div [formGroup]="fg.get('preferences')">
+    <div class="form-group">
+      <label>Favorite Color</label><br>
+      <div class="form-check form-check-inline" *ngFor="let c of colors; let i = indec">
         <input
-          type="text"
-          formControlName="name"
-          class="form-control">
+          [attr.id]="formId + '-preferences-favorite_color-' + i"
+          class="form-check-input"
+          type="radio"
+          formControlName="favorite_color"
+          [value]="c.value">
+        <label class="form-check-label"
+          [attr.for]="formId + '-preferences-favorite_color-' + i">{{c.label}}</label>
       </div>
+      <app-status [binding]="binding.child('preferences').child('favorite_color')"></app-status>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-6">
-      <h4>Friends ({{boundGroup.get('friends').length}})</h4>
-      <form [formGroup]="addFriendFg"
-        (ngSubmit)="boundGroup.get('friends').push(addFriendFg.value); addFriendFg.patchValue({name: ''})">
+
+  <h4>
+    Friends ({{binding.child('friends').control.length}})
+    <app-status [binding]="binding.child('friends')"></app-status>
+  </h4>
+  <form [formGroup]="addFriendFg"
+    (ngSubmit)="binding.child('friends').push(addFriendFg.value); addFriendFg.patchValue({name:''})">
+    <div class="form-group">
+      <label [attr.for]="formId + 'addFriendFg-name'">Add Friend</label>
+      <div class="input-group">
+        <input
+          [attr.id]="formId + 'addFriendFg-name'"
+          type="text"
+          class="form-control"
+          placeholder="New Friend Name"
+          aria-label="New Friend Name"
+          formControlName="name">
+        <div class="input-group-append">
+          <button
+            class="btn btn-outline-secondary"
+            [attr.id]="formId + 'add-friend-submit'"
+            type="submit"
+            [disabled]="addFriendFg.invalid">
+            <i class="fas fa-plus"></i>
+            <span class="sr-only">Add Friend</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div formArrayName="friends">
+    <div *ngFor="let friendGroup of binding.child('friends').control.controls; let i = index;" class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="my-0">Friend #{{i + 1}}</h6>
+        <div>
+          <button
+            (click)="binding.child('friends').remove(i)"
+            type="button" class="btn btn-danger btn-sm">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body" [formGroup]="friendGroup">
         <div class="form-group">
-          <div class="input-group">
+          <label [attr.for]="formId + 'friends-' + i + '-name'">Name</label>
+          <app-status [binding]="binding.child('friends').child(i).child('name')"></app-status>
+          <input
+            [attr.id]="formId + 'friends-' + i + '-name'"
+            type="text"
+            class="form-control"
+            placeholder="Friend Name"
+            aria-label="Friend Name"
+            formControlName="name">
+        </div>
+        <div class="form-group mb-0">
+          <div class="form-check">
             <input
-              type="text"
-              class="form-control"
-              placeholder="New Friend Name"
-              aria-label="New Friend Name"
-              formControlName="name"
-              [attr.aria-describedby]="formId + 'add-friend-submit'">
-            <div class="input-group-append">
-              <button
-                class="btn btn-outline-secondary"
-                [attr.id]="formId + 'add-friend-submit'"
-                type="submit"
-                [disabled]="addFriendFg.invalid">
-                <i class="fas fa-plus"></i>
-                <span class="sr-only">Add Friend</span>
-              </button>
-            </div>
+              [attr.id]="formId + 'friends-' + i + '-imaginary'"
+              class="form-check-input"
+              type="checkbox"
+              formControlName="imaginary"
+              [value]="true">
+            <label class="form-check-label" [attr.for]="formId + 'friends-' + i + '-imaginary'">
+              This is an imaginary friend.
+            </label>
+            <app-status [binding]="binding.child('friends').child(i).child('imaginary')"></app-status>
           </div>
         </div>
-      </form>
-      <div formArrayName="friends">
-        <div *ngFor="let friendFg of boundGroup.get('friends').control.controls; let i = index">
-          {{i}}
-        </div>
       </div>
     </div>
   </div>
-</form>
+</div>

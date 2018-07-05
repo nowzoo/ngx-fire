@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { NgxFireFactory } from './ngx-fire.service';
+import { NgxFireFactory } from './ngx-fire-factory.service';
+
 @NgModule({
   imports: [
-    CommonModule
   ],
+  declarations: [],
+  exports: [],
   providers: [NgxFireFactory]
 })
 export class NgxFireModule { }
