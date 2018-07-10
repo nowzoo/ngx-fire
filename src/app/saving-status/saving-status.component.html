@@ -1,0 +1,10 @@
+<small class="d-inline-block mx-1 text-muted" style="width: 1em">
+  <span *ngIf="'saving'===status" title="Saving...">
+    <i class="fas fa-fw fa-spin fa-spinner"></i>
+    <span class="sr-only">Saving...</span>
+  </span>
+  <span *ngIf="'saved'===status" title="Saved!">
+    <i class="fas fa-fw fa-check text-success"></i>
+    <span class="sr-only">Saved!</span>
+  </span>
+</small>

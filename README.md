@@ -1,27 +1,102 @@
 # NgxFire
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.7.
+Directives for binding Angular Reactive form controls and arrays to Firebase references.
 
-## Development server
+## Install
+```bash
+npm i @nowzoo/ngx-fire --save
+```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+This library depends upon Firebase and the Angular Reactive Forms module. It's up to you how you create Firebase references: a good option is [angularfire2](https://github.com/angular/angularfire2).
 
-## Code scaffolding
+## Quick Start
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Import `NgxFireModule` and `ReactiveFormsModule`.
+```typescript
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgxFireModule } from '@nowzoo/ngx-fire';
+// other imports...
 
-## Build
+@NgModule({
+  imports: [
+    ReactiveFormsModule,
+    NgxFireModule,
+    // etc..
+  ]
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+})
+export class SomeModule { }
+```
 
-## Running unit tests
+Bind a control with `[ngxFireControl]="ref"`...
+```html
+<input
+  type="text"
+  class="form-control"
+  placeholder="How's it going?"
+  [formControl]="control"
+  [ngxFireControl]="ref"
+  #fc="ngxFireControl"
+  debounce="1000"
+  (blur)="fc.save()">
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Bind a numerically indexed array with `[ngxFireArray]="ref"`...
+```html
+<div formArrayName="tags" [ngxFireArray]="ref" #tagsFa="ngxFireArray">
+....
+</div>
+```
 
-## Running end-to-end tests
+## API
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+### `NgxFireControlDirective`
 
-## Further help
+Binds a FormControl to a reference. Must be used in conjunction with `FormControlDirective` (`[formControl]="ctl"`) or `FormControlName` (`formControlName="myName"`.)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+selector: `[ngxFireControl]` exportAs: `ngxFireControl`
+
+#### Inputs
+
+- `ngxFireControl: Reference` Required.
+- `debounce: number` Optional. Default: 0. The amount of time in milliseconds to debounce form control changes before saving. Useful for text controls.
+- `trim: boolean` Optional. Default: true. If true, and if the control value is a string, the value will be trimmed before saving.
+
+#### Methods
+
+- `save(): Promise<void>` Saves the current control value to the database. Rejects if the control is not valid or if there is a Firebase error.
+
+#### Properties
+
+- `error: Observable<Error>` Populated if the Firebase ref throws an error either reading or writing.
+- `saving: Observable<boolean>` True if the control value is being saved to the database.
+- `value: Observable<any>` The current database value.
+- `ref: Reference` The reference you passed in via `ngxFireControl`
+
+
+### `NgxFireArrayDirective`
+
+Binds a FormArray to a reference. Must be used in conjunction with  `FormArrayName` (`formArrayName="myName"`.)
+
+selector: `[ngxFireArray]` exportAs: `ngxFireArray`
+
+#### Inputs
+
+- `ngxFireArray: Reference` Required.
+- `controlFactory: () => FormControl|FormGroup` Optional. A function that returns a group or control for each element of the array. By default this is a function that returns a FormControl with the `required` validator. Note that you should only pass an empty group or control: the value is set from the database.
+
+#### Methods
+
+- `push(value: any): Promise<void>` Pushes `value` to the end of the array and saves to the database.
+- `remove(i: number): Promise<void>` Removes the element at `i` and saves the array to the database.
+- `move(from: number, to: number): Promise<void>` Moves the element at `from` to `to` and saves the array to the database.
+
+#### Properties
+
+- `error: Observable<Error>` Populated if the Firebase ref throws an error either reading or writing.
+- `saving: Observable<boolean>` True if the array value is being saved to the database, i.e. when pushing, removing or moving.
+- `value: Observable<any>` The current database value.
+- `ref: Reference` The reference you passed in via `ngxFireArray`
+- `addControl` An unattached FormGroup or FormControl, created with `controlFactory()` that you can use to push new elements to the array.
+- `length: number` The length of the FormArray.
+- `controls: (FormGroup|FormControl)[]` The child controls.

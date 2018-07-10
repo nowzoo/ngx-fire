@@ -1,0 +1,26 @@
+
+<section class="demo">
+  <h2>Control Demo</h2>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label [attr.for]="formId + 'hows-it-going'">How's it going?</label>
+        <app-saving-status [saving]="fcHowsIt.saving"></app-saving-status>
+        <input
+          [attr.id]="formId + 'hows-it-going'"
+          type="text"
+          class="form-control"
+          placeholder="How's it going?"
+          [formControl]="control"
+          [ngxFireControl]="ref"
+          #fcHowsIt="ngxFireControl"
+          debounce="1000"
+          (blur)="fcHowsIt.save()">
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <h5>Database Value</h5>
+      <pre>{{fcHowsIt.value | async | json}}</pre>
+    </div>
+  </div>
+</section>
