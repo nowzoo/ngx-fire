@@ -24,5 +24,8 @@ export class DemoArrayComponent implements OnInit {
     });
 
   }
+  clearDemoData() {
+    this.ref.set(null);
+  }
 
 }

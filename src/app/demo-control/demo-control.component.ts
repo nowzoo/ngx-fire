@@ -18,5 +18,8 @@ export class DemoControlComponent implements OnInit {
     this.control = new FormControl('');
     this.ref = this.baseRef.child('app-demo-control');
   }
+  clearDemoData() {
+    this.ref.set(null);
+  }
 
 }

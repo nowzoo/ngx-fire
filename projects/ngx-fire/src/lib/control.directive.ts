@@ -84,7 +84,7 @@ export class NgxFireControlDirective implements OnInit, OnDestroy {
     );
     this._formSubscription = combineLatest(this._control.valueChanges, this._control.statusChanges)
       .pipe(debounceTime(this._getDebounce()))
-      .subscribe(() => this.save().catch(() => {}));
+      .subscribe(() => this.save());
   }
   ngOnDestroy() {
     if (this._dbListener) {
@@ -95,30 +95,24 @@ export class NgxFireControlDirective implements OnInit, OnDestroy {
     }
   }
 
-  save(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if ('VALID' !== this._control.status) {
-        return reject(new Error('Control is invalid.'));
-      }
-      if (this._control.pristine) {
-        return resolve();
-      }
+  save(): void {
+    if ('VALID' !== this._control.status) {
+      return;
+    }
+    if (this._control.pristine) {
+      return;
+    }
 
-      this._saving$.next(true);
-      const val = this._control.value;
-      const dbVal = this._getTrim() && typeof val === 'string' ? val.trim() : val;
-      this.ref.set(dbVal)
-        .then(() => {
-          this._saving$.next(false);
-          resolve();
-        })
-        .catch((error: Error) => {
-          this._onDbError(error);
-          reject(error);
-        });
-
-    });
-
+    this._saving$.next(true);
+    const val = this._control.value;
+    const dbVal = this._getTrim() && typeof val === 'string' ? val.trim() : val;
+    this.ref.set(dbVal)
+      .then(() => {
+        this._saving$.next(false);
+      })
+      .catch((error: Error) => {
+        this._onDbError(error);
+      });
 
   }
 

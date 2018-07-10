@@ -64,7 +64,7 @@ selector: `[ngxFireControl]` exportAs: `ngxFireControl`
 
 #### Methods
 
-- `save(): Promise<void>` Saves the current control value to the database. Rejects if the control is not valid or if there is a Firebase error.
+- `save(): void` Saves the current control value to the database. Rejects if the control is not valid or if there is a Firebase error.
 
 #### Properties
 
@@ -87,9 +87,9 @@ selector: `[ngxFireArray]` exportAs: `ngxFireArray`
 
 #### Methods
 
-- `push(value: any): Promise<void>` Pushes `value` to the end of the array and saves to the database.
-- `remove(i: number): Promise<void>` Removes the element at `i` and saves the array to the database.
-- `move(from: number, to: number): Promise<void>` Moves the element at `from` to `to` and saves the array to the database.
+- `push(value: any): void` Pushes `value` to the end of the array and saves to the database.
+- `remove(i: number): void` Removes the element at `i` and saves the array to the database.
+- `move(from: number, to: number): void` Moves the element at `from` to `to` and saves the array to the database.
 
 #### Properties
 

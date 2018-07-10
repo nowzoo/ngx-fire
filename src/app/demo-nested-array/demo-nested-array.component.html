@@ -1,0 +1,196 @@
+<section class="demo">
+  <h2>Nested Array Demo</h2>
+  <p class="lead">
+    More complex arrays...
+  </p>
+  <p>
+    <a href="https://github.com/nowzoo/ngx-fire/tree/master/src/app/demo-nested-array" target="github">Demo Code</a>
+  </p>
+  <div class="row">
+    <div class="col-lg-6">
+      <form [formGroup]="fg">
+        <div formArrayName="friends"
+          [ngxFireArray]="ref.child('friends')"
+          #faFriends="ngxFireArray"
+          [controlFactory]="friendFgFactory">
+
+
+          <h4>
+            Friends ({{faFriends.length}})
+            <app-saving-status [saving]="faFriends.saving"></app-saving-status>
+          </h4>
+
+          <form [formGroup]="faFriends.addControl"
+              (ngSubmit)="faFriends.push(faFriends.addControl.value); faFriends.addControl.patchValue({name: ''})">
+            <div class="form-group">
+              <label [attr.for]="formId + 'add-friend-name'">Add Friend</label>
+              <div class="input-group">
+                <input type="text"
+                  [attr.id]="formId + 'add-friend-name'"
+                  class="form-control"
+                  placeholder="Friend's name"
+                  formControlName="name"
+                  aria-label="Friend's name"
+                  [attr.aria-describedby]="formId + 'add-friend-submit'">
+                <div class="input-group-append">
+                  <button
+                    [attr.id]="formId + 'add-friend-submit'"
+                    class="btn btn-success"
+                    type="submit"
+                    [disabled]="faFriends.addControl.invalid">
+                    <i class="fas fa-plus"></i>
+                    <span class="sr-only">Add Friend</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+
+          <div
+            *ngFor="let friendGroup of faFriends.controls; let friendIndex = index;" class="card card-body my-2"
+            [formGroupName]="friendIndex">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5>Friend #{{friendIndex + 1}}: {{friendNameFc.value | async}}</h5>
+              <div class="d-flex">
+                <button
+                  class="btn btn-sm btn-secondary mr-1"
+                  [disabled]="0 === friendIndex"
+                  title="Move tag up"
+                  (click)="faFriends.move(friendIndex, friendIndex - 1)">
+                  <span class="sr-only">Move tag up</span>
+                  <i class="fas fa-fw fa-caret-up"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-secondary"
+                  [disabled]="faFriends.length - 1 === friendIndex"
+                  title="Move tag down"
+                  (click)="faFriends.move(friendIndex, friendIndex + 1)">
+                  <span class="sr-only">Move tag down</span>
+                  <i class="fas fa-fw fa-caret-down"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-danger ml-4"
+                  title="Remove tag"
+                  (click)="faFriends.remove(friendIndex)">
+                  <span class="sr-only">Remove tag</span>
+                  <i class="fas fa-fw fa-times"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label [attr.for]="formId + 'friend-' + friendIndex + '-name'">Friend Name</label>
+              <app-saving-status [saving]="friendNameFc.saving"></app-saving-status>
+              <input type="text" class="form-control"
+                [attr.id]="formId + 'friend-' + friendIndex + '-name'"
+                formControlName="name"
+                [ngxFireControl]="faFriends.ref.child(friendIndex).child('name')"
+                #friendNameFc="ngxFireControl"
+                debounce="1000"
+                (blur)="friendNameFc.save()">
+            </div>
+
+            <div class="form-group">
+              <div class="form-check">
+                <input
+                  [attr.id]="formId + 'friend-' + friendIndex + '-imaginary'"
+                  class="form-check-input"
+                  type="checkbox"
+                  formControlName="imaginary"
+                  [ngxFireControl]="faFriends.ref.child(friendIndex).child('imaginary')"
+                  #fcFriendImaginary="ngxFireControl"
+                  [value]="true">
+                <label class="form-check-label"
+                  [attr.for]="formId + 'friend-' + friendIndex + '-imaginary'">This is an imaginary friend.</label>
+                <app-saving-status [saving]="fcFriendImaginary.saving"></app-saving-status>
+              </div>
+            </div>
+
+            <div formArrayName="tags" [ngxFireArray]="ref.child('friends').child(friendIndex).child('tags')" #tagsFa="ngxFireArray">
+              <h6>
+                Friend Tags ({{tagsFa.length}})
+                <app-saving-status [saving]="tagsFa.saving"></app-saving-status>
+              </h6>
+              <div class="form-group">
+                <label [attr.for]="formId + 'friend-' + i + '-add'">Add Tag</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control"
+                      [attr.id]="formId + 'friend-' + friendIndex + '-add'"
+                      [formControl]="tagsFa.addControl"
+                      placeholder="Add tag..."
+                      (keydown.enter)="submit.click()">
+                    <div class="input-group-append">
+                      <button type="button"
+                        #submit
+                        class="btn btn-success"
+                        [disabled]="tagsFa.addControl.invalid"
+                        (click)="tagsFa.push(tagsFa.addControl.value);tagsFa.addControl.setValue('')">
+                        <i class="fas fa-plus"></i>
+                        <span class="sr-only">Add Tag</span>
+                      </button>
+                    </div>
+                  </div>
+              </div>
+
+              <div *ngFor="let tagControl of tagsFa.controls; let tagIndex = index" class="my-2 card card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <label [attr.for]="formId + 'friend-' + friendIndex +  '-tag-' + tagIndex" class="sr-only">Tag</label>
+                    <input type="text" class="form-control"
+                      [attr.id]="formId + 'friend-' + friendIndex +  '-tag-' + tagIndex"
+                      [formControlName]="tagIndex"
+                      [ngxFireControl]="tagsFa.ref.child(tagIndex)"
+                      #tagFc="ngxFireControl"
+                      (blur)="tagFc.save()">
+                  </div>
+                  <app-saving-status [saving]="tagFc.saving"></app-saving-status>
+                  <div class="d-flex">
+                    <button
+                      class="btn btn-sm btn-secondary mr-1"
+                      [disabled]="0 === tagIndex"
+                      title="Move tag up"
+                      (click)="tagsFa.move(tagIndex, tagIndex - 1)">
+                      <span class="sr-only">Move tag up</span>
+                      <i class="fas fa-fw fa-caret-up"></i>
+                    </button>
+                    <button
+                      class="btn btn-sm btn-secondary"
+                      [disabled]="tagsFa.length - 1 === tagIndex"
+                      title="Move tag down"
+                      (click)="tagsFa.move(tagIndex, tagIndex + 1)">
+                      <span class="sr-only">Move tag down</span>
+                      <i class="fas fa-fw fa-caret-down"></i>
+                    </button>
+                  </div>
+                  <div class="ml-4">
+                    <button
+                      class="btn btn-sm btn-danger"
+                      title="Remove tag"
+                      (click)="tagsFa.remove(tagIndex)">
+                      <span class="sr-only">Remove tag</span>
+                      <i class="fas fa-fw fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div> <!-- tag -->
+            </div> <!-- tags -->
+          </div><!-- friend -->
+        </div> <!-- formArrayName="friends" -->
+      </form>
+    </div>
+    <div class="col-lg-4 offset-lg-2">
+      <div class="d-flex justify-content-between align-items-center">
+        <h6 class="my-0">Database Value</h6>
+        <div>
+          <a title="Clear Demo Data" class="badge badge-danger" href="#" (click)="$event.preventDefault(); clearDemoData()">
+            <span class="sr-only">Clear Demo Data</span>
+            <i class="fas fa-times"></i>
+          </a>
+        </div>
+      </div>
+      <pre>{{faFriends.value | async | json}}</pre>
+    </div>
+  </div>
+
+</section>

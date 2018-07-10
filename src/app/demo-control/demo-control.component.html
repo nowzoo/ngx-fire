@@ -1,6 +1,15 @@
 
 <section class="demo">
   <h2>Control Demo</h2>
+  <p class="lead">
+    Bind a Form Control to a Firebase database reference with
+    <code>[ngxFireControl]="ref"</code>.
+  </p>
+  <p>
+    <a href="https://github.com/nowzoo/ngx-fire/tree/master/src/app/demo-control" target="github">Demo Code</a>
+    |
+    <a href="https://github.com/nowzoo/ngx-fire#ngxfirecontroldirective" target="github">API</a>
+  </p>
   <div class="row">
     <div class="col-lg-6">
       <div class="form-group">
@@ -18,8 +27,16 @@
           (blur)="fcHowsIt.save()">
       </div>
     </div>
-    <div class="col-lg-6">
-      <h5>Database Value</h5>
+    <div class="col-lg-4 offset-lg-2">
+      <div class="d-flex justify-content-between align-items-center">
+        <h6 class="my-0">Database Value</h6>
+        <div>
+          <a title="Clear Demo Data" class="badge badge-danger" href="#" (click)="$event.preventDefault(); clearDemoData()">
+            <span class="sr-only">Clear Demo Data</span>
+            <i class="fas fa-times"></i>
+          </a>
+        </div>
+      </div>
       <pre>{{fcHowsIt.value | async | json}}</pre>
     </div>
   </div>

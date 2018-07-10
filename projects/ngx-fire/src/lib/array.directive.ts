@@ -107,37 +107,33 @@ export class NgxFireArrayDirective implements OnInit, OnDestroy {
     }
   }
 
-  push(val: any): Promise<void> {
+  push(val: any): void {
     const arrVal = this._control.value.map(e => e);
     arrVal.push(val);
     return this._save(arrVal);
   }
 
-  remove(i: number): Promise<void> {
+  remove(i: number): void {
     const arrVal = this._control.value.map(e => e);
     arrVal.splice(i, 1);
     return this._save(arrVal);
   }
-  move(from: number, to: number): Promise<void> {
+  move(from: number, to: number): void {
     const arrVal = this._control.value.map(e => e);
     const moved = arrVal.splice(from, 1);
     arrVal.splice(to, 0, ...moved);
     return this._save(arrVal);
   }
 
-  private _save(arrValue: any[]): Promise<void> {
+  private _save(arrValue: any[]): void {
     this._saving$.next(true);
-    return new Promise((resolve, reject) => {
-      this.ref.set(arrValue)
-        .then(() => {
-          this._saving$.next(false);
-          resolve();
-        })
-        .catch((error: Error) => {
-          this._onDbError(error);
-          reject(error);
-        });
-    });
+    this.ref.set(arrValue)
+      .then(() => {
+        this._saving$.next(false);
+      })
+      .catch((error: Error) => {
+        this._onDbError(error);
+      });
 
   }
 

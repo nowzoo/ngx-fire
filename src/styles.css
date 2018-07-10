@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 section.demo {
   padding: 1em 0;
+  margin-bottom: 1em;
   border-bottom: 1px dotted #666;
 }
 
