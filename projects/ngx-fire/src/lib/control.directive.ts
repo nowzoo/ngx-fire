@@ -64,7 +64,7 @@ export class NgxFireControlDirective implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (! (this.ngxFireControl instanceof Reference)) {
+    if (! (this.ngxFireControl)) {
       throw new Error(
         'NgxFireControlDirective must provide a reference. ' +
         'Usage: [ngxFireControl]="myRef".'
@@ -79,8 +79,9 @@ export class NgxFireControlDirective implements OnInit, OnDestroy {
     this._control = this._formDirective.control;
     this._dbListener = this.ref.on(
       'value',
-      (snap: DataSnapshot) => this._onDbValue(snap),
-      (error: Error) => this._onDbError(error)
+      this._onDbValue,
+      this._onDbError,
+      this
     );
     this._formSubscription = combineLatest(this._control.valueChanges, this._control.statusChanges)
       .pipe(debounceTime(this._getDebounce()))
@@ -112,11 +113,12 @@ export class NgxFireControlDirective implements OnInit, OnDestroy {
       })
       .catch((error: Error) => {
         this._onDbError(error);
+        this._saving$.next(false);
       });
 
   }
 
-  private _onDbValue(snap: DataSnapshot) {
+  _onDbValue(snap: DataSnapshot) {
     this._ngZone.runOutsideAngular(() => {
       const value = snap.val();
       this._formDirective.control.setValue(value, {emitEvent: false});
@@ -126,16 +128,16 @@ export class NgxFireControlDirective implements OnInit, OnDestroy {
     });
   }
 
-  private _onDbError(error: Error) {
+  _onDbError(error: Error) {
     this._error$.next(error);
   }
 
 
-  private _getDebounce(): number {
+  _getDebounce(): number {
     const debounce = parseInt(this.debounce as any, 10);
     return isNaN(debounce) || debounce < 0 ? 0 : debounce;
   }
-  private _getTrim(): boolean {
+  _getTrim(): boolean {
     return this.trim !== false;
   }
 

@@ -67,9 +67,7 @@ module.exports = function (wallaby) {
       app.use('/assets', express.static(path.join(__dirname, 'src/assets')));
     },
 
-    env: {
-      kind: 'electron'
-    },
+    env: {kind: 'chrome'},
 
     postprocessor: webpackPostprocessor,
 

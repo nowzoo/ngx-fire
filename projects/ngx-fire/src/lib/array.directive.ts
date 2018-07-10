@@ -30,7 +30,6 @@ import {
 } from 'rxjs';
 
 
-
 @Directive({
   selector: '[ngxFireArray]',
   exportAs: 'ngxFireArray'
@@ -80,7 +79,7 @@ export class NgxFireArrayDirective implements OnInit, OnDestroy {
 
   ngOnInit() {
     this._arrayAddControl = this.controlFactory();
-    if (! (this.ngxFireArray instanceof Reference)) {
+    if (! this.ngxFireArray) {
       throw new Error(
         'NgxFireControlDirective must provide a reference. ' +
         'Usage: [ngxFireArray]="myRef".'
@@ -97,8 +96,9 @@ export class NgxFireArrayDirective implements OnInit, OnDestroy {
     this._query = this.ref.orderByKey();
     this._dbListener = this._query.on(
       'value',
-      (snap: DataSnapshot) => this._onDbValue(snap),
-      (error: Error) => this._onDbError(error)
+      this._onDbValue,
+      this._onDbError,
+      this
     );
   }
   ngOnDestroy() {
@@ -125,19 +125,20 @@ export class NgxFireArrayDirective implements OnInit, OnDestroy {
     return this._save(arrVal);
   }
 
-  private _save(arrValue: any[]): void {
+  _save(arrValue: any[]): void {
     this._saving$.next(true);
     this.ref.set(arrValue)
       .then(() => {
         this._saving$.next(false);
       })
       .catch((error: Error) => {
+        this._saving$.next(false);
         this._onDbError(error);
       });
 
   }
 
-  private _onDbValue(snap: DataSnapshot) {
+  _onDbValue(snap: DataSnapshot) {
     this._ngZone.runOutsideAngular(() => {
       const value = snap.val() || [];
       this._value$.next(snap.val());
@@ -164,7 +165,7 @@ export class NgxFireArrayDirective implements OnInit, OnDestroy {
     });
   }
 
-  private _onDbError(error: Error) {
+  _onDbError(error: Error) {
     this._error$.next(error);
   }
 
