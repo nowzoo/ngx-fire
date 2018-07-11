@@ -1,7 +1,20 @@
 {
   "name": "@nowzoo/ngx-fire",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Directives for binding Angular Reactive form controls and arrays to Firebase references.",
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "firebase",
+    "reactive forms",
+    "bindings"
+  ],
+  "homepage": "https://github.com/nowzoo/ngx-fire#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nowzoo/ngx-fire.git"
+  },
+  "bugs": "https://github.com/nowzoo/ngx-fire/issues",
   "peerDependencies": {
     "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
     "@angular/core": "^6.0.0-rc.0 || ^6.0.0",
