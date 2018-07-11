@@ -2,6 +2,8 @@
 
 Directives for binding Angular Reactive form controls and arrays to Firebase references.
 
+[Demo Site](https://nowzoo.github.io/ngx-fire/) | [Demo Code](https://github.com/nowzoo/ngx-fire/tree/master/src/app)
+
 ## Install
 ```bash
 npm i @nowzoo/ngx-fire --save
@@ -47,6 +49,8 @@ Bind a numerically indexed array with `[ngxFireArray]="ref"`...
 ....
 </div>
 ```
+
+See the demos ([site](https://nowzoo.github.io/ngx-fire/), [code](https://github.com/nowzoo/ngx-fire/tree/master/src/app)) for concrete examples.
 
 ## API
 
@@ -100,3 +104,38 @@ selector: `[ngxFireArray]` exportAs: `ngxFireArray`
 - `addControl` An unattached FormGroup or FormControl, created with `controlFactory()` that you can use to push new elements to the array.
 - `length: number` The length of the FormArray.
 - `controls: (FormGroup|FormControl)[]` The child controls.
+
+## Contributing
+Contributions and suggestions are welcome.
+
+Get started...
+```bash
+git clone git@github.com:nowzoo/ngx-fire.git
+cd ngx-fire
+npm i
+ng build ngx-fire --prod
+```
+
+The library code is found in `projects/ngx-fire`.
+
+The demo site code is in `src/app`.
+
+This library was built with the Angular CLI, so...
+
+```bash
+# test the library...
+ng test ngx-fire
+
+# build the library...
+ng build ngx-fire --prod
+
+# serve the demo site locally...
+ng serve
+```
+
+Note that changes to the library code **are not** automatically reflected in the locally-served demo site. You must run `ng build ngx-fire` whenever you make changes to the library. But the local server does watch for changes to the built library -- so you don't need to restart the server.
+
+If you use [Wallaby](https://wallabyjs.com/) to run unit tests, select the `projects/ngx-fire/wallaby.js` as your config file.
+
+## License
+[MIT](https://github.com/nowzoo/ngx-fire/blob/master/LICENSE)
