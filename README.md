@@ -1,5 +1,8 @@
 # NgxFire
 
+DEPRECATED REPOSITORY: [USE THIS REPO INSTEAD](https://github.com/nowzoo/ngx/tree/master/projects/ngx-fire)
+
+
 Directives for binding Angular Reactive form controls and arrays to Firebase references.
 
 [Demo Site](https://nowzoo.github.io/ngx-fire/) | [Demo Code](https://github.com/nowzoo/ngx-fire/tree/master/src/app)
